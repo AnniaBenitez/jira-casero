@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario de Ticket</title>
+</head>
+<body>
+  <h1>Crear nuevo ticket</h1>
+  <form id="ticketForm">
+    <input name="titulo" placeholder="Título del ticket" required><br>
+    <textarea name="descripcion" placeholder="Descripción" required></textarea><br>
+    <select name="prioridad" required>
+      <option value="">Prioridad</option>
+      <option value="Urgente">Super Urgente</option>
+      <option value="Alta">Alta</option>
+      <option value="Media">Media</option>
+      <option value="Baja">Baja</option>
+    </select><br>
+    <input name="solicitante" placeholder="Solicitante" required><br>
+    <input name="responsable" placeholder="Responsable" required><br>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <p id="respuesta"></p>
+
+  <script>
+    const form = document.getElementById('ticketForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      const res = await fetch('https://script.google.com/macros/s/AKfycbySNNgzm7zeeGstJQl4apzwwE8sEenvv_IB4aH23Qu4hd3ggZSai4dmjCRrKhVaxocS/exec', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const text = await res.text();
+      document.getElementById('respuesta').innerText = text === 'OK' ? "✅ Ticket guardado con éxito." : "⚠️ Error: " + text;
+      form.reset();
+    });
+  </script>
+</body>
+</html>
